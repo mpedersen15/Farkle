@@ -26,6 +26,7 @@ public class Player {
 
             if(areDicePlayable(dice)){
                 System.out.println("Dice are playable!");
+                System.out.println("Dice score: " + getDiceScore(dice));
             }else{
                 System.out.println("You lose!");
             }
@@ -51,7 +52,7 @@ public class Player {
         return true;
     }
 
-    public void printDiceResults(ArrayList<Integer> results){
+    private void printDiceResults(ArrayList<Integer> results){
         System.out.print("Results are: ");
         for (int i = 0 ; i < results.size() ; i++) {
             System.out.print(results.get(i) + " ");
@@ -59,7 +60,7 @@ public class Player {
         System.out.println();
     }
 
-    public boolean areDicePlayable(ArrayList<Integer> dice) {
+    private HashMap<Integer, Integer> getDiceBreakdown(ArrayList<Integer> dice){
         HashMap<Integer, Integer> diceBreakdown = new HashMap<>();
 
         for(Integer die : dice){
@@ -72,18 +73,52 @@ public class Player {
             }
         }
 
-        /*for (Map.Entry<Integer, Integer> pair : diceBreakdown.entrySet()) {
-            System.out.println("Number of " + pair.getKey() + "s: " + pair.getValue());
-        }*/
+        return diceBreakdown;
+    }
 
-        boolean containsOne = diceBreakdown.containsKey(1);
-        boolean containsFive = diceBreakdown.containsKey(5);
+    private boolean areDicePlayable(ArrayList<Integer> dice) {
+        HashMap<Integer,Integer> diceBreakdown = getDiceBreakdown(dice);
+
+        return  diceBreakdown.containsKey(1) || diceBreakdown.containsKey(5) || diceContainsSet(diceBreakdown);
+    }
+
+    private boolean diceContainsSet(HashMap<Integer, Integer> diceBreakdown){
         boolean containsTriplet = diceBreakdown.containsValue(3);
         boolean containsQuadruplet = diceBreakdown.containsValue(4);
         boolean containsQuintet = diceBreakdown.containsValue(5);
         boolean containsSextuplet = diceBreakdown.containsValue(6);
 
-        return  containsOne || containsFive || containsTriplet || containsQuadruplet || containsQuintet || containsSextuplet;
+        return containsTriplet || containsQuadruplet || containsQuintet || containsSextuplet;
+    }
+
+    private int getDiceScore(ArrayList<Integer> dice) {
+        int tempScore = 0;
+        int fiveSingleScore = 50;
+        int oneSingleScore = 100;
+        int oneTripleScore = 1000;
+
+        HashMap<Integer,Integer> diceBreakdown = getDiceBreakdown(dice);
+
+        for (Map.Entry<Integer, Integer> pair : diceBreakdown.entrySet()) {
+            if (pair.getKey() == 1){
+                if (pair.getValue() >= 3){
+                    tempScore += oneTripleScore * (int) Math.pow(2, pair.getValue() - 3);
+                }else {
+                    tempScore += oneSingleScore * pair.getValue();
+                }
+            }else if (pair.getKey() == 5) {
+                if (pair.getValue() >= 3){
+                    tempScore += pair.getKey()*100 * (int) Math.pow(2, pair.getValue() - 3);
+                }else {
+                    tempScore += fiveSingleScore * pair.getValue();
+                }
+            }else {
+                if (pair.getValue() >= 3){
+                    tempScore += pair.getKey()*100 * (int) Math.pow(2, pair.getValue() - 3);
+                }
+            }
+        }
+        return tempScore;
     }
 
 }
