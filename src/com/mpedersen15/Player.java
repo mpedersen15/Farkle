@@ -1,9 +1,7 @@
 package com.mpedersen15;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * Created by MindRocket Design on 11/15/2017.
@@ -22,13 +20,24 @@ public class Player {
         int tempScore = 0;
         do {
             ArrayList<Integer> dice = rollDice(diceAvailable);
-            printDiceResults(dice);
+            for (int i = 0 ; i < dice.size() ; i++) {
+                System.out.println("DIE #" + (i+1));
+                printDie(dice.get(i));
+            }
 
             if(areDicePlayable(dice)){
                 System.out.println("Dice are playable!");
                 System.out.println("Dice score: " + getDiceScore(dice));
+                ArrayList<Integer> diceNumbers = chooseDiceToKeep();
+                ArrayList<Integer> chosenDice = new ArrayList<>();
+                for(int index : diceNumbers) {
+                    chosenDice.add(dice.get(index - 1));
+                }
+                tempScore += getDiceScore(chosenDice);
+
+                System.out.println("Your current round score is: " + tempScore);
             }else{
-                System.out.println("You lose!");
+                System.out.println("Nothing playable!");
             }
 
 
@@ -36,8 +45,23 @@ public class Player {
 
     }
 
+    private ArrayList<Integer> chooseDiceToKeep(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Please enter the numbers of the dice you'd like to keep, or enter -1 to stay: ");
+        String keepString = scanner.nextLine();
+        System.out.println("You've chosen to keep: " + keepString);
+
+        ArrayList<String> list = new ArrayList<>(Arrays.asList(keepString.split(",")));
+        ArrayList<Integer> choiceList = new ArrayList<>();
+        for (String choice : list) {
+            System.out.println(choice);
+            choiceList.add(Integer.parseInt(choice));
+        }
+        return choiceList;
+    }
+
     public ArrayList<Integer> rollDice(int numDice) {
-        System.out.print("The dice rolled to: ");
+        System.out.println("The dice rolled to: ");
         Die die = new Die();
         ArrayList<Integer> dice = new ArrayList<>();
         for (int i = 0; i < numDice; i++){
@@ -119,6 +143,53 @@ public class Player {
             }
         }
         return tempScore;
+    }
+
+    public void printDie(int number){
+
+        switch(number){
+            case 1:
+                System.out.println("-----------");
+                System.out.println("|         |");
+                System.out.println("|    *    |");
+                System.out.println("|         |");
+                System.out.println("-----------");
+                break;
+            case 2:
+                System.out.println("-----------");
+                System.out.println("|      *  |");
+                System.out.println("|         |");
+                System.out.println("|  *      |");
+                System.out.println("-----------");
+                break;
+            case 3:
+                System.out.println("-----------");
+                System.out.println("|      *  |");
+                System.out.println("|    *    |");
+                System.out.println("|  *      |");
+                System.out.println("-----------");
+                break;
+            case 4:
+                System.out.println("-----------");
+                System.out.println("|  *   *  |");
+                System.out.println("|         |");
+                System.out.println("|  *   *  |");
+                System.out.println("-----------");
+                break;
+            case 5:
+                System.out.println("-----------");
+                System.out.println("|  *   *  |");
+                System.out.println("|    *    |");
+                System.out.println("|  *   *  |");
+                System.out.println("-----------");
+                break;
+            default:
+                System.out.println("-----------");
+                System.out.println("|  *   *  |");
+                System.out.println("|  *   *  |");
+                System.out.println("|  *   *  |");
+                System.out.println("-----------");
+        }
     }
 
 }
