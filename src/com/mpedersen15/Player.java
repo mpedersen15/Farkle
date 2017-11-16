@@ -16,6 +16,10 @@ public class Player {
         this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void takeTurn() {
         int diceAvailable = 6;
         int tempScore = 0;
