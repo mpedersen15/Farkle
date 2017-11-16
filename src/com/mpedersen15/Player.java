@@ -9,6 +9,7 @@ import java.util.*;
 public class Player {
     private String name;
     private int score = 0;
+    private boolean hasPostedScore = false;
 
 
     public Player(String name) {
@@ -18,7 +19,11 @@ public class Player {
     public void takeTurn() {
         int diceAvailable = 6;
         int tempScore = 0;
+
+        boolean isTurnOver = false;
         do {
+            System.out.println("=======================================");
+            System.out.println("Rolling " + diceAvailable + " die/dice");
             ArrayList<Integer> dice = rollDice(diceAvailable);
             for (int i = 0 ; i < dice.size() ; i++) {
                 System.out.println("DIE #" + (i+1));
@@ -29,23 +34,43 @@ public class Player {
                 System.out.println("Dice are playable!");
                 System.out.println("Dice score: " + getDiceScore(dice));
                 ArrayList<Integer> diceNumbers = chooseDiceToKeep();
-                ArrayList<Integer> chosenDice = new ArrayList<>();
-                for(int index : diceNumbers) {
-                    chosenDice.add(dice.get(index - 1));
-                }
-                tempScore += getDiceScore(chosenDice);
+                if (diceNumbers.contains(-1)){
+                    tempScore += getDiceScore(dice);
+                    System.out.println("Staying with a score of: " + tempScore);
+                    isTurnOver = true;
+                }else{
+                    ArrayList<Integer> chosenDice = new ArrayList<>();
+                    for(int index : diceNumbers) {
+                        chosenDice.add(dice.get(index - 1));
+                    }
+                    tempScore += getDiceScore(chosenDice);
 
-                System.out.println("Your current round score is: " + tempScore);
+                    System.out.println("Your current round score is: " + tempScore);
+
+                    diceAvailable = diceAvailable - chosenDice.size();
+
+                    if (diceAvailable == 0) {
+                        System.out.println("All dice play! Roll all 6 dice again!");
+                        diceAvailable = 6;
+                    }
+                }
+
             }else{
                 System.out.println("Nothing playable!");
+                isTurnOver = true;
             }
 
 
-        }while(!isTurnOver());
+        }while(!isTurnOver);
 
+        this.score += tempScore;
+
+        System.out.println("Your total score is: " + this.score);
     }
 
     private ArrayList<Integer> chooseDiceToKeep(){
+        // TODO: validate choiceList before returning (i.e. don't allow out of bounds, don't allow illegal characters, don't allow dice that have zero points)
+        // TODO: modify choice statement and don't allow "staying" if Player hasn't yet posted a score
         Scanner scanner = new Scanner(System.in);
         System.out.print("Please enter the numbers of the dice you'd like to keep, or enter -1 to stay: ");
         String keepString = scanner.nextLine();
@@ -55,7 +80,7 @@ public class Player {
         ArrayList<Integer> choiceList = new ArrayList<>();
         for (String choice : list) {
             System.out.println(choice);
-            choiceList.add(Integer.parseInt(choice));
+            choiceList.add(Integer.parseInt(choice.trim()));
         }
         return choiceList;
     }

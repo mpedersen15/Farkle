@@ -3,8 +3,16 @@ package com.mpedersen15;
 public class Main {
 
     public static void main(String[] args) {
+
+        // TODO: ask for number of players, initialize Players with a user-given name;
+
+        // TODO: create end-game conditions, loop through PlayerList and take turns until conditions are met
+
         Player matt = new Player("Matt");
 
-        matt.takeTurn();
+        for (int i = 0 ; i < 3 ; i++){
+            matt.takeTurn();
+        }
+
     }
 }
