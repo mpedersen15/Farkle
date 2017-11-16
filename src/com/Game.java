@@ -15,6 +15,14 @@ public class Game {
     }
 
     public void startGame() {
+        getPlayers();
+        // TODO: switch this test FOR loop with a WHILE loop that continues until someone wins
+        for (Player player : playerList){
+            player.takeTurn();
+        }
+    }
+
+    private void getPlayers() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("How many players will be playing? ");
         int numPlayers = scanner.nextInt();

@@ -9,7 +9,7 @@ import java.util.*;
 public class Player {
     private String name;
     private int score = 0;
-    private boolean hasPostedScore = false;
+    private boolean hasPostedScore = false; // you must have a round >= 1000 points to be allowed to score additional points
 
 
     public Player(String name) {
@@ -21,6 +21,10 @@ public class Player {
     }
 
     public void takeTurn() {
+        System.out.println("********************************");
+        System.out.println("It's " + this.name + "'s turn! ");
+        System.out.println("********************************");
+
         int diceAvailable = 6;
         int tempScore = 0;
 
@@ -61,6 +65,7 @@ public class Player {
 
             }else{
                 System.out.println("Nothing playable!");
+                tempScore = 0;
                 isTurnOver = true;
             }
 
